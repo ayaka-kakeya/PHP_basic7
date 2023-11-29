@@ -9,15 +9,19 @@
 // 3回目の勝利です。
 // $_SESSIONの挙動やswitch文については調べてみてください。
 
+session_start();
 
-if (! isset($_SESSION['result'])) {
+if (!isset($_SESSION['result'])) {
     $_SESSION['result'] = 0;
 }
+if(isset($_POST['choice'])){
+$choice=$_POST['choice'];
+}else{
+    $choice='';
+}
 
-class Player
-{
-    public function jankenConverter(int $choice): string
-    {
+function jankenConverter($choice): string
+    {   
         $janken = '';
         switch ($choice) {
             case 1:
@@ -25,6 +29,7 @@ class Player
                 break;
             case 2:
                 $janken = 'チョキ';
+                break;
             case 3:
                 $janken = 'パー';
                 break;
@@ -33,7 +38,7 @@ class Player
         }
         return $janken;
     }
-}
+
 
 class Me
 {
@@ -53,7 +58,7 @@ class Me
 
     public function getChoice(): string
     {
-        return $this->jankenConverter($this->choice);
+        return jankenConverter($this->choice);
     }
 }
 
@@ -67,7 +72,7 @@ class Enemy
 
     public function getChoice(): string
     {
-        return $this->jankenConverter($this->choice);
+        return jankenConverter($this->choice);
     }
 }
 
@@ -81,7 +86,7 @@ class Battle
         $this->second = $enemy->getChoice();
     }
 
-    private function judge(): int
+    private function judge(): string
     {
         if ($this->first === $this->second) {
             return '引き分け';
@@ -112,17 +117,18 @@ class Battle
         }
     }
 
-    private function countVictories()
+    public function countVictories()
     {
         if ($this->judge() === '勝ち') {
-            return $_SESSION['result'] += 1;
+            $_SESSION['result'] += 1;
+            return $_SESSION['result'];
         }
     }
 
-    public function getVitories()
+    /*public function getVictories()
     {
         return $_SESSION['result'];
-    }
+    }*/
 
     public function showResult()
     {
@@ -131,10 +137,10 @@ class Battle
 }
 
 if (! empty($_POST)) {
-    $me    = new Me($_POST['last_name'], $_POST['first_name'], $_POST['choice'], $_POST['choice']);
+    $me    = new Me($_POST['last_name'], $_POST['first_name'], $_POST['choice']);
     $enemy = new Enemy();
     echo $me->getName().'は'.$me->getChoice().'を出しました。';
-    echo '<br>'
+    echo '<br>';
     echo '相手は'.$enemy->getChoice().'を出しました。';
     echo '<br>';
     $battle = new Battle($me, $enemy);
@@ -142,7 +148,7 @@ if (! empty($_POST)) {
     if ($battle->showResult() === '勝ち') {
 
         echo '<br>';
-        echo $battle->getVitories().'回目の勝利です。';
+        echo $battle->countVictories().'回目の勝利です。';
     }
 }
 
@@ -155,7 +161,7 @@ if (! empty($_POST)) {
 </head>
 <body>
     <section>
-    <form action='./lesson3.php'>
+    <form action='./lesson3.php' method="POST">
         <label>姓</label>
         <input type="text" name="last_name" value="<?php echo '山田' ?>" />
         <label>名</label>
