@@ -117,7 +117,7 @@ class Battle
         }
     }
 
-    public function countVictories()
+    private function countVictories()
     {
         if ($this->judge() === '勝ち') {
             $_SESSION['result'] += 1;
@@ -125,10 +125,11 @@ class Battle
         }
     }
 
-    /*public function getVictories()
+    public function getVictories()
     {
+        $this->countVictories();
         return $_SESSION['result'];
-    }*/
+    }
 
     public function showResult()
     {
@@ -148,7 +149,7 @@ if (! empty($_POST)) {
     if ($battle->showResult() === '勝ち') {
 
         echo '<br>';
-        echo $battle->countVictories().'回目の勝利です。';
+        echo $battle->getVictories().'回目の勝利です。';
     }
 }
 
