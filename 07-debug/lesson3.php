@@ -14,6 +14,9 @@ session_start();
 if (!isset($_SESSION['result'])) {
     $_SESSION['result'] = 0;
 }
+
+
+
 if(isset($_POST['choice'])){
 $choice=$_POST['choice'];
 }else{
@@ -22,21 +25,23 @@ $choice=$_POST['choice'];
 
 function jankenConverter($choice): string
     {   
-        $janken = '';
-        switch ($choice) {
-            case 1:
-                $janken = 'グー';
-                break;
-            case 2:
-                $janken = 'チョキ';
-                break;
-            case 3:
-                $janken = 'パー';
-                break;
-            default:
-                break;
+        if ($_POST['choice'] != 0) {
+            $janken = '';
+            switch ($choice) {
+                case 1:
+                    $janken = 'グー';
+                    break;
+                case 2:
+                    $janken = 'チョキ';
+                    break;
+                case 3:
+                    $janken = 'パー';
+                    break;
+                default:
+                    break;
+            }
+            return $janken;
         }
-        return $janken;
     }
 
 
@@ -87,7 +92,7 @@ class Battle
     }
 
     private function judge(): string
-    {
+    {   
         if ($this->first === $this->second) {
             return '引き分け';
         }
@@ -140,16 +145,18 @@ class Battle
 if (! empty($_POST)) {
     $me    = new Me($_POST['last_name'], $_POST['first_name'], $_POST['choice']);
     $enemy = new Enemy();
-    echo $me->getName().'は'.$me->getChoice().'を出しました。';
-    echo '<br>';
-    echo '相手は'.$enemy->getChoice().'を出しました。';
-    echo '<br>';
-    $battle = new Battle($me, $enemy);
-    echo '勝敗は'.$battle->showResult().'です。';
-    if ($battle->showResult() === '勝ち') {
-
+    if ($_POST['last_name'] != null && $_POST['first_name'] != null && $_POST['choice'] != 0){
+        echo $me->getName().'は'.$me->getChoice().'を出しました。';
         echo '<br>';
-        echo $battle->getVictories().'回目の勝利です。';
+        echo '相手は'.$enemy->getChoice().'を出しました。';
+        echo '<br>';
+        $battle = new Battle($me, $enemy);
+        echo '勝敗は'.$battle->showResult().'です。';
+        if ($battle->showResult() === '勝ち') {
+
+            echo '<br>';
+            echo $battle->getVictories().'回目の勝利です。';
+        }
     }
 }
 

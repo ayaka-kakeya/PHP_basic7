@@ -54,7 +54,7 @@ if (! empty($_POST)) {
     $age              = $_POST['age'];
     $hobby            = $_POST['hobby'];
     $selfIntroduction=new SelfIntroduction ($lastName,$firstName,$age,$hobby);
-    if ($selfIntroduction != null) {
+    if ($lastName != null && $firstName != null && $age != null && $hobby != null) {
         echo '私の名前は'.$selfIntroduction->getFullName().'です。年齢は'.$selfIntroduction->getAge().'です。';
         echo '<br>';
         echo '趣味は'. $selfIntroduction->getHobby().'です。';
